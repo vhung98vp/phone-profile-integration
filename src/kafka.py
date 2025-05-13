@@ -59,6 +59,7 @@ def process_message(msg_key, msg):
 def start_kafka_consumer():
     def consume_loop():
         while True:
+            logger.info("Waiting for messages...")
             msg = consumer.poll(1.0)
             if msg is None or msg.error():
                 continue
