@@ -10,7 +10,7 @@ from .elasticsearch import query_elasticsearch
 # Kafka setup
 producer = Producer(KAFKA_PRODUCER_CONFIG)
 consumer = Consumer(KAFKA_CONSUMER_CONFIG)
-consumer.subscribe(KAFKA['input_topic'])
+consumer.subscribe([KAFKA['input_topic']])
 
 executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
 
@@ -59,6 +59,7 @@ def process_message(msg_key, msg):
 def start_kafka_consumer():
     def consume_loop():
         while True:
+            logger.info("Waiting for messages...")
             msg = consumer.poll(1.0)
             if msg is None or msg.error():
                 continue
