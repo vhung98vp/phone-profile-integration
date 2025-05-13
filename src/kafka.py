@@ -10,7 +10,7 @@ from .elasticsearch import query_elasticsearch
 # Kafka setup
 producer = Producer(KAFKA_PRODUCER_CONFIG)
 consumer = Consumer(KAFKA_CONSUMER_CONFIG)
-consumer.subscribe(KAFKA['input_topic'])
+consumer.subscribe([KAFKA['input_topic']])
 
 executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
 
