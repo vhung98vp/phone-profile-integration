@@ -62,10 +62,10 @@ def start_kafka_consumer():
         while True:
             msg = consumer.poll(KAFKA['consumer_timeout'])
             if msg is None or msg.error():
-                if msg.error():
-                    logger.error(f"Message error: {msg.error()}")
-                else:
+                if msg is None:
                     logger.info("Waiting for messages...")
+                else:
+                    logger.error(f"Message error: {msg.error()}")
                 continue
             try:
                 message = msg.value().decode("utf-8")
