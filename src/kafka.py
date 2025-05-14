@@ -43,7 +43,7 @@ def process_message(msg_key, msg):
         }
 
         send_output_to_kafka(result)
-        logger.info(f"Processed {phone_number}")
+        logger.info(f"Processed message for {phone_number}!")
 
     except Exception as e:
         logger.exception(f"Error while processing message {msg_key}:{msg}: {e}")
@@ -53,27 +53,37 @@ def process_message(msg_key, msg):
             "message": msg
         })
     finally:
-        logger.info(f"Processed message in {time.time() - start_time:.2f} seconds")
+        logger.info(f"Processed message in {time.time() - start_time:.4f} seconds")
 
 
 def start_kafka_consumer():
-    def consume_loop():
+    processed_count = 0
+    error_count = 0
+    try:
         while True:
             msg = consumer.poll(1.0)
             if msg is None or msg.error():
+                if msg.error():
+                    logger.error(f"Message error: {msg.error()}")
+                else:
+                    logger.info("Waiting for messages...")
                 continue
             try:
                 message = msg.value().decode("utf-8")
-                message_key = msg.key().decode("utf-8")
+                message_key = msg.key().decode("utf-8") if msg.key() else None
                 if not message_key:
                     logger.warning(f"Received message without key: {message}")
                 executor.submit(process_message, message_key, message)
                 consumer.commit(asynchronous=False)
+                processed_count += 1
             except Exception as e:
-                logger.exception(f"Failed to decode message: {e}")
-
-    Thread(target=consume_loop, daemon=True).start()
-    logger.info("Kafka consumer thread started")
+                logger.exception(f"Failed to process message: {e}")
+                error_count += 1
+    except Exception as e:
+        logger.exception(f"Consumer process terminated: {e}")
+    finally:
+        consumer.close()
+        logger.info(f"Processed {processed_count} messages with {error_count} errors.")
 
 
 def send_output_to_kafka(result: dict):

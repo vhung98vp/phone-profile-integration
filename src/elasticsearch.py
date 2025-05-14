@@ -5,7 +5,7 @@ from .config import logger, ES
 def query_elasticsearch(phone_number):
     """Fetch phone metadata document from Elasticsearch by phone number."""
     url = f"{ES['url']}/{ES['phone_index']}/_search"
-    auth = (ES['user'], ES['password'])
+    auth = (ES['user'], ES['password']) if ES['user'] and ES['password'] else None
     headers = {'Content-Type': 'application/json'}
     query = {
         "query": {
