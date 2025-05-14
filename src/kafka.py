@@ -50,10 +50,9 @@ def process_message(msg_key, msg):
 
     except Exception as e:
         logger.exception(f"Error while processing message {msg_key}:{msg}: {e}")
-        log_error_to_kafka({
-            "error": str(e),
-            "key": msg_key,
-            "message": msg
+        log_error_to_kafka(msg_key, { 
+            "error": str(e), 
+            "message": msg 
         })
     finally:
         logger.info(f"Processed message in {time.time() - start_time:.4f} seconds")
@@ -99,9 +98,9 @@ def send_output_to_kafka(result: dict):
         logger.exception(f"Error sending result to output topic: {e}")
 
 
-def log_error_to_kafka(error_info: dict):
+def log_error_to_kafka(msg_key, error_info: dict):
     try:
-        producer.produce(KAFKA['error_topic'], value=json.dumps(error_info))
+        producer.produce(KAFKA['error_topic'], key=msg_key, value=json.dumps(error_info))
         producer.flush()
     except Exception as e:
         logger.exception(f"Error sending to error topic: {e}")
