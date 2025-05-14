@@ -1,5 +1,6 @@
 import json
 import time
+import uuid
 from confluent_kafka import Consumer, Producer
 from concurrent.futures import ThreadPoolExecutor
 from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, KAFKA_PRODUCER_CONFIG, MAX_WORKERS
@@ -20,6 +21,9 @@ def process_message(msg_key, msg):
         data = json.loads(msg)
         phone_number = data.get("phone_number")
         new_meta = data.get("metadata")
+        if not phone_number or not new_meta:
+            logger.warning(f"Invalid message data: {msg}")
+            return
 
         record = query_elasticsearch(phone_number)
         if record:
@@ -42,7 +46,7 @@ def process_message(msg_key, msg):
         }
 
         send_output_to_kafka(result)
-        logger.info(f"Processed message for {phone_number}!")
+        logger.info(f"Processed message for phone number: {phone_number}")
 
     except Exception as e:
         logger.exception(f"Error while processing message {msg_key}:{msg}: {e}")
@@ -87,7 +91,9 @@ def start_kafka_consumer():
 
 def send_output_to_kafka(result: dict):
     try:
-        producer.produce(KAFKA['output_topic'], value=json.dumps(result))
+        phone_number = result.get("phone_number")
+        phone_uid = str(uuid.uuid5(uuid.NAMESPACE_DNS, phone_number))
+        producer.produce(KAFKA['output_topic'], key=phone_uid, value=json.dumps(result))
         producer.poll(0)
     except Exception as e:
         logger.exception(f"Error sending result to output topic: {e}")
