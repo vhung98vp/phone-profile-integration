@@ -14,7 +14,7 @@ This project is designed to manage and integrate phone profile data into the com
 - `ES_PHONE_INDEX`: Name of the Elasticsearch index for phone profiles
 - `KAFKA_BOOTSTRAP_SERVER`: Kafka bootstrap server address
 - `KAFKA_CONSUMER_GROUP`: Kafka consumer group name
-- `KAFKA_CONSUMER_GROUP`: Kafka consumer timeout (in second)
+- `KAFKA_CONSUMER_TIMEOUT`: Kafka consumer timeout (in second)
 - `KAFKA_AUTO_OFFSET_RESET`: Kafka offset reset policy
 - `KAFKA_INPUT_TOPIC`: Kafka topic for input messages
 - `KAFKA_OUTPUT_TOPIC`: Kafka topic for output messages
