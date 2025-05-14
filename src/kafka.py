@@ -2,7 +2,6 @@ import json
 import time
 from confluent_kafka import Consumer, Producer
 from concurrent.futures import ThreadPoolExecutor
-from threading import Thread
 from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, KAFKA_PRODUCER_CONFIG, MAX_WORKERS
 from .utils import merge_metadata, construct_metadata
 from .elasticsearch import query_elasticsearch
@@ -61,7 +60,7 @@ def start_kafka_consumer():
     error_count = 0
     try:
         while True:
-            msg = consumer.poll(1.0)
+            msg = consumer.poll(KAFKA['consumer_timeout'])
             if msg is None or msg.error():
                 if msg.error():
                     logger.error(f"Message error: {msg.error()}")

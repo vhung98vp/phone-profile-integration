@@ -10,10 +10,11 @@ logger = logging.getLogger(__name__)
 KAFKA = {
     'brokers': os.environ.get('KAFKA_BOOTSTRAP_SERVER'),
     'consumer_group': os.environ.get('KAFKA_CONSUMER_GROUP', 'default_consumer_group'),
+    'consumer_timeout': float(os.environ.get('KAFKA_CONSUMER_TIMEOUT', 1)),
     'auto_offset_reset': os.environ.get('KAFKA_AUTO_OFFSET_RESET', 'earliest'),
-    'input_topic': os.environ.get('KAFKA_INPUT_TOPIC', 'input-topic'),
-    'output_topic': os.environ.get('KAFKA_OUTPUT_TOPIC', 'output-topic'),
-    'error_topic': os.environ.get('KAFKA_ERROR_TOPIC', 'error-topic')
+    'input_topic': os.environ.get('KAFKA_INPUT_TOPIC'),
+    'output_topic': os.environ.get('KAFKA_OUTPUT_TOPIC'),
+    'error_topic': os.environ.get('KAFKA_ERROR_TOPIC')
 }
 
 KAFKA_CONSUMER_CONFIG = {
