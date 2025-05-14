@@ -39,7 +39,9 @@ def process_message(msg_key, msg):
             record = {"phone_number": phone_number, "metadata": [new_meta]}
             agg_data = construct_metadata(new_meta)
 
+        phone_uid = str(uuid.uuid5(uuid.NAMESPACE_DNS, phone_number))
         result = {
+            "_fs_internal_id": phone_uid,
             "phone_number": phone_number,
             "metadata": record["metadata"],
             **agg_data
@@ -90,9 +92,7 @@ def start_kafka_consumer():
 
 def send_output_to_kafka(result: dict):
     try:
-        phone_number = result.get("phone_number")
-        phone_uid = str(uuid.uuid5(uuid.NAMESPACE_DNS, phone_number))
-        producer.produce(KAFKA['output_topic'], key=phone_uid, value=json.dumps(result))
+        producer.produce(KAFKA['output_topic'], key=str(uuid.uuid4()), value=json.dumps(result))
         producer.poll(0)
     except Exception as e:
         logger.exception(f"Error sending result to output topic: {e}")
