@@ -47,9 +47,9 @@ def transform_properties(properties):
                 logger.warning(f"Invalid date format for key {key}: {value}")
 
         if ES['suffix_pattern']:
-            sub_key = re.sub(ES['suffix_pattern'], '', key)
+            key = re.sub(ES['suffix_pattern'], '', key)
 
-        match_key = re.match(f"{ES_PROPERTY['metadata']}\[(\d+)\]\.(.+)", sub_key)
+        match_key = re.match(f"{ES_PROPERTY['metadata']}\[(\d+)\]\.(.+)", key)
         if match_key:
             index = int(match_key.group(1))
             field = match_key.group(2)
@@ -57,7 +57,7 @@ def transform_properties(properties):
                 metadata_list.append({})
             metadata_list[index][field] = value
         else:
-            normal_dict[sub_key] = value
+            normal_dict[key] = value
 
     if metadata_list:
         normal_dict['metadata'] = metadata_list
