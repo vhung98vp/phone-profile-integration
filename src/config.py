@@ -31,8 +31,7 @@ ES = {
     'url': os.environ.get('ES_URL'),
     'user': os.environ.get('ES_USER'),
     'password': os.environ.get('ES_PASSWORD'),
-    'phone_index': os.environ.get('ES_PHONE_INDEX', 'phone_index'),
-    'property_phone_number': os.environ.get('ES_PROPERTY_PHONE_NUMBER', 'phone_number'),
+    'phone_index': os.environ.get('ES_PHONE_INDEX')
 }
 
 MAX_WORKERS = int(os.environ.get('MAX_WORKERS', 4))

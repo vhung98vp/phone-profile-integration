@@ -10,7 +10,7 @@ def query_elasticsearch(phone_number):
     query = {
         "query": {
             "match": {
-                ES['property_phone_number']: phone_number
+                "properties.phone_number": phone_number
             }
         }
     }
@@ -22,7 +22,7 @@ def query_elasticsearch(phone_number):
                                      json=query)
         response.raise_for_status()
         response_hits = response.json()['hits']['hits']
-        return response_hits[0]['_source'] if response_hits else None
+        return response_hits[0]['_source']['properties'] if response_hits else None
     except Exception as e:
         logger.exception(f"Failed to fetch from Elasticsearch: {e}")
         return None

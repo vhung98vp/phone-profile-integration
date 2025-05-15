@@ -12,7 +12,6 @@ This project is designed to manage and integrate phone profile data into the com
 - `ES_USER`: Elasticsearch username
 - `ES_PASSWORD`: Elasticsearch password
 - `ES_PHONE_INDEX`: Name of the Elasticsearch index for phone profiles
-- `ES_PROPERTY_PHONE_NUMBER`: Name of the property phone number in Elasticsearch index
 - `KAFKA_BOOTSTRAP_SERVER`: Kafka bootstrap server address
 - `KAFKA_CONSUMER_GROUP`: Kafka consumer group name
 - `KAFKA_CONSUMER_TIMEOUT`: Kafka consumer timeout (in second)
