@@ -10,7 +10,7 @@ def query_elasticsearch(phone_number):
     query = {
         "query": {
             "match": {
-                "properties.phone_number": phone_number
+                ES['property_phone_number']: phone_number
             }
         }
     }
