@@ -3,8 +3,8 @@ import time
 import uuid
 from confluent_kafka import Consumer, Producer
 from concurrent.futures import ThreadPoolExecutor
-from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, KAFKA_PRODUCER_CONFIG, MAX_WORKERS
-from .utils import merge_metadata, construct_metadata
+from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, KAFKA_PRODUCER_CONFIG, MAX_WORKERS, ES_PROPERTY, ES_PROPERTY_MD
+from .utils import merge_metadata, construct_agg_metadata, flat_list
 from .elasticsearch import query_elasticsearch
 
 # Kafka setup
@@ -19,32 +19,32 @@ def process_message(msg_key, msg):
     start_time = time.time()
     try:
         data = json.loads(msg)
-        phone_number = data.get("phone_number")
-        new_meta = data.get("metadata")
+        phone_number = data.get(ES_PROPERTY['phone_number'])
+        new_meta = data.get(ES_PROPERTY['metadata'])
         if not phone_number or not new_meta:
             logger.warning(f"Invalid message data: {msg}")
             return
 
-        record = query_elasticsearch(phone_number)
-        if record:
-            # Check if in metadata array exist new_metadata monthly data
-            if any(new_meta["month"] == meta["month"] 
-                    and new_meta["total_calls"] == meta["total_calls"] 
-                    for meta in record["metadata"]):
+        es_record = query_elasticsearch(phone_number)
+        if es_record:
+            # Check if in metadata array exist new metadata monthly data
+            if any(meta[ES_PROPERTY_MD['month']] == new_meta[ES_PROPERTY_MD['month']]
+                    and new_meta[ES_PROPERTY_MD['total_calls']] == meta[ES_PROPERTY_MD['total_calls']] 
+                    for meta in es_record['metadata']):
                 logger.info(f"Monthly data already exists for {phone_number}.")
                 return
-            record["metadata"].append(new_meta)
-            agg_data = merge_metadata(record["metadata"])
+            es_record['metadata'].append(new_meta)
+            agg_data = merge_metadata(es_record['metadata'])
         else:
-            record = {"phone_number": phone_number, "metadata": [new_meta]}
-            agg_data = construct_metadata(new_meta)
+            es_record = {'metadata': [new_meta]}
+            agg_data = construct_agg_metadata(new_meta)
 
         phone_uid = str(uuid.uuid5(uuid.NAMESPACE_DNS, phone_number))
         result = {
-            "_fs_internal_id": phone_uid,
-            "phone_number": phone_number,
-            "metadata": record["metadata"],
-            **agg_data
+            ES_PROPERTY['internal_id']: phone_uid,
+            ES_PROPERTY['phone_number']: phone_number,
+            **agg_data,
+            **flat_list(ES_PROPERTY['metadata'], es_record['metadata'])
         }
 
         send_output_to_kafka(result)
