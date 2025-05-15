@@ -36,6 +36,7 @@ ES = {
 }
 
 ES_PROPERTY = {
+    'phone_number_search': os.environ.get('ES_PROPERTY_PHONE_NUMBER_SEARCH', 'phone_number_s'),
     'internal_id': os.environ.get('ES_PROPERTY_INTERNAL_ID', 'fs_internal_id'),
     'phone_number': os.environ.get('ES_PROPERTY_PHONE_NUMBER', 'phone_number'),
     'metadata': os.environ.get('ES_PROPERTY_METADATA', 'metadata'),
