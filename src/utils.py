@@ -5,7 +5,7 @@ from .config import ES_PROPERTY, ES_PROPERTY_MD
 
 def build_agg_metadata(new_meta):
     agg_fields = [ 'total_calls', 'call_from_rate', 'business_call_rate',
-        'avg_duration_from', 'avg_duration_to', 'total_weekend_call', 'total_night_call',
+        'avg_duration_from', 'avg_duration_to', 'total_weekend_calls', 'total_night_calls',
         'total_day_from', 'total_contacts', 'most_district_from', 'top_5_contacts'
     ]
     return {
@@ -15,7 +15,7 @@ def build_agg_metadata(new_meta):
 
 def merge_metadata(metadata_list):
     fields = [ 
-        "total_calls", "total_weekend_call", "total_night_call", 
+        "total_calls", "total_weekend_calls", "total_night_calls", 
         "total_day_from", "total_contacts"
     ]
     calc_fields = [ 
@@ -48,8 +48,8 @@ def merge_metadata(metadata_list):
         ES_PROPERTY["business_call_rate"]: agg["total_business_call"] / agg["total_calls"],
         ES_PROPERTY["avg_duration_from"]: agg["total_duration_from"] / agg["total_calls_from"],
         ES_PROPERTY["avg_duration_to"]: agg["total_duration_to"] / agg["total_calls_to"],
-        ES_PROPERTY["total_weekend_call"]: agg["total_weekend_call"] / count,
-        ES_PROPERTY["total_night_call"]: agg["total_night_call"] / count,
+        ES_PROPERTY["total_weekend_calls"]: agg["total_weekend_calls"] / count,
+        ES_PROPERTY["total_night_calls"]: agg["total_night_calls"] / count,
         ES_PROPERTY["total_day_from"]: agg["total_day_from"] / count,
         ES_PROPERTY["total_contacts"]: agg["total_contacts"] / count,
         ES_PROPERTY["most_district_from"]: agg["most_district_from"],
