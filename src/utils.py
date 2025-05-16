@@ -1,6 +1,6 @@
 import re
 from collections import defaultdict
-from config import ES_PROPERTY, ES_PROPERTY_MD
+from .config import ES_PROPERTY, ES_PROPERTY_MD
 
 
 def build_agg_metadata(new_meta):
