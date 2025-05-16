@@ -49,7 +49,7 @@ def transform_properties(properties):
         if ES['suffix_pattern']:
             key = re.sub(ES['suffix_pattern'], '', key)
 
-        match_key = re.match(f"{ES_PROPERTY['metadata']}\[(\d+)\]\.(.+)", key)
+        match_key = re.match(rf"{ES_PROPERTY['metadata']}\[(\d+)\]\.(.+)", key)
         if match_key:
             index = int(match_key.group(1))
             field = match_key.group(2)
