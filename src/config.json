@@ -1,0 +1,54 @@
+{
+    "es_properties": {
+        "internal_id": "_fs_internal_id",
+        "suffix_pattern": "(_s_srcha|_dt_srcha)$",
+        "phone_number_search": "phoneNumber_s_srcha",
+        "phone_number": "phoneNumber",
+        "metadata": "Metadata"
+    },
+    "es_phone_properties": {
+        "total_calls": "totalCalls",
+        "call_from_rate": "callFromRate",
+        "business_call_rate": "businessCallRate",
+        "avg_duration_from": "avgDurationFrom",
+        "avg_duration_to": "avgDurationTo",
+        "total_weekend_calls": "totalWeekendCalls",
+        "total_night_calls": "totalNightCalls",
+        "total_day_from": "totalDayFrom",
+        "total_contacts": "totalContacts",
+        "most_district_from": "mostDistrictFrom",
+        "top_5_contacts": "top5Contacts"
+    },
+    "es_phone_metadata": {
+        "month": "metadataMonth",
+        "total_calls": "metadataTotalCalls",
+        "call_from_rate": "metadataCallFromRate",
+        "business_call_rate": "metadataBusinessCallRate",
+        "avg_duration_from": "metadataAvgDurationFrom",
+        "avg_duration_to": "metadataAvgDurationTo",
+        "total_weekend_calls": "metadataTotalWeekendCalls",
+        "total_night_calls": "metadataTotalNightCalls",
+        "total_day_from": "metadataTotalDayFrom",
+        "total_contacts": "metadataTotalContacts",
+        "most_district_from": "metadataMostDistrictFrom",
+        "top_5_contacts": "metadataTop5Contacts",
+        "top_10_contacts": "metadataTop10Contacts"
+    },
+    "message_fields": {
+        "phone_number": "phoneNumber",
+        "metadata": "Metadata",
+        "month": "metadataMonth",
+        "total_calls": "metadataTotalCalls",
+        "call_from_rate": "metadataCallFromRate",
+        "business_call_rate": "metadataBusinessCallRate",
+        "avg_duration_from": "metadataAvgDurationFrom",
+        "avg_duration_to": "metadataAvgDurationTo",
+        "total_weekend_calls": "metadataTotalWeekendCalls",
+        "total_night_calls": "metadataTotalNightCalls",
+        "total_day_from": "metadataTotalDayFrom",
+        "total_contacts": "metadataTotalContacts",
+        "most_district_from": "metadataMostDistrictFrom",
+        "top_5_contacts": "metadataTop5Contacts",
+        "top_10_contacts": "metadataTop10Contacts"
+    }
+}

@@ -3,8 +3,9 @@ import time
 import uuid
 from confluent_kafka import Consumer, Producer
 from concurrent.futures import ThreadPoolExecutor
-from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, KAFKA_PRODUCER_CONFIG, MAX_WORKERS, ES_PROPERTY, ES_PROPERTY_MD
-from .utils import merge_metadata, build_agg_metadata, flat_list
+from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, \
+    KAFKA_PRODUCER_CONFIG, MAX_WORKERS, MES_FIELD, ES_PHONE_MD, ES_PROPERTY
+from .utils import merge_metadata, build_agg_metadata, flat_list, map_metadata
 from .elasticsearch import query_elasticsearch
 
 # Kafka setup
@@ -19,17 +20,18 @@ def process_message(msg_key, msg):
     start_time = time.time()
     try:
         data = json.loads(msg)
-        phone_number = data.get(ES_PROPERTY['phone_number'])
-        new_meta = data.get(ES_PROPERTY['metadata'])
+        phone_number = data.get(MES_FIELD['phone_number'])
+        new_meta = data.get(MES_FIELD['metadata'])
         if not phone_number or not new_meta:
             logger.warning(f"Invalid message data: {msg}")
             return
+        new_meta = map_metadata(new_meta)
 
         es_record = query_elasticsearch(phone_number)
         if es_record:
             # Check if in metadata array exist new metadata monthly data
-            if any(meta[ES_PROPERTY_MD['month']] == new_meta[ES_PROPERTY_MD['month']]
-                    and new_meta[ES_PROPERTY_MD['total_calls']] == meta[ES_PROPERTY_MD['total_calls']] 
+            if any(meta[ES_PHONE_MD['month']] == new_meta[ES_PHONE_MD['month']]
+                    and meta[ES_PHONE_MD['total_calls']] == new_meta[ES_PHONE_MD['total_calls']] 
                     for meta in es_record['metadata']):
                 logger.info(f"Monthly data already exists for {phone_number}.")
                 return
