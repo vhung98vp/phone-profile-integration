@@ -3,19 +3,10 @@ from collections import defaultdict
 from config import ES_PROPERTY, ES_PROPERTY_MD
 
 
-def construct_agg_metadata(new_meta):
-    agg_fields = [
-        'total_calls',
-        'call_from_rate',
-        'business_call_rate',
-        'avg_duration_from',
-        'avg_duration_to',
-        'total_weekend_call',
-        'total_night_call',
-        'total_day_from',
-        'total_contacts',
-        'most_district_from',
-        'top_5_contacts'
+def build_agg_metadata(new_meta):
+    agg_fields = [ 'total_calls', 'call_from_rate', 'business_call_rate',
+        'avg_duration_from', 'avg_duration_to', 'total_weekend_call', 'total_night_call',
+        'total_day_from', 'total_contacts', 'most_district_from', 'top_5_contacts'
     ]
     return {
         ES_PROPERTY[field]: new_meta[ES_PROPERTY_MD[field]] 

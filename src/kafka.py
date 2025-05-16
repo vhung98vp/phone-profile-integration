@@ -4,7 +4,7 @@ import uuid
 from confluent_kafka import Consumer, Producer
 from concurrent.futures import ThreadPoolExecutor
 from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, KAFKA_PRODUCER_CONFIG, MAX_WORKERS, ES_PROPERTY, ES_PROPERTY_MD
-from .utils import merge_metadata, construct_agg_metadata, flat_list
+from .utils import merge_metadata, build_agg_metadata, flat_list
 from .elasticsearch import query_elasticsearch
 
 # Kafka setup
@@ -37,7 +37,7 @@ def process_message(msg_key, msg):
             agg_data = merge_metadata(es_record['metadata'])
         else:
             es_record = {'metadata': [new_meta]}
-            agg_data = construct_agg_metadata(new_meta)
+            agg_data = build_agg_metadata(new_meta)
 
         phone_uid = str(uuid.uuid5(uuid.NAMESPACE_DNS, phone_number))
         result = {
