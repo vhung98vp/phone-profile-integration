@@ -2,11 +2,16 @@ import re
 from collections import defaultdict
 from .config import ES_PHONE_MD, ES_PHONE_PROPERTY, MES_FIELD
 
+def metadata_index(metadata_list, new_meta):
+    for idx, md in enumerate(metadata_list):
+        if md[ES_PHONE_MD['month']] == new_meta[ES_PHONE_MD['month']]:
+            return idx
+    return -1
 
-def new_metadata_exist(metadata_list, new_meta):
-    for md in metadata_list:
-        if (md[ES_PHONE_MD['month']] == new_meta[ES_PHONE_MD['month']]
-                and md[ES_PHONE_MD['total_calls']] == new_meta[ES_PHONE_MD['total_calls']]):
+
+def is_metadata_exist(found_meta, new_meta):
+    if found_meta[ES_PHONE_MD['total_calls']] == new_meta[ES_PHONE_MD['total_calls']] \
+        and found_meta[ES_PHONE_MD['call_from_rate']] == new_meta[ES_PHONE_MD['call_from_rate']]:
             return True
     return False
 
