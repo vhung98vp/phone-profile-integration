@@ -50,7 +50,7 @@ def process_message(msg_key, msg):
         }
 
         send_output_to_kafka(result)
-        logger.info(f"Processed message for phone number: {phone_number}")
+        logger.info(f"Updated metadata to Kafka for phone number: {phone_number}")
 
     except Exception as e:
         logger.exception(f"Error while processing message {msg_key}:{msg}: {e}")
