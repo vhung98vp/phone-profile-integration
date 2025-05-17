@@ -59,7 +59,7 @@ def process_message(msg_key, msg):
             "message": msg 
         })
     finally:
-        logger.info(f"Processed message in {time.time() - start_time:.4f} seconds")
+        logger.info(f"Processed message {msg_key} in {time.time() - start_time:.4f} seconds")
 
 
 def start_kafka_consumer():
