@@ -3,6 +3,14 @@ from collections import defaultdict
 from .config import ES_PHONE_MD, ES_PHONE_PROPERTY, MES_FIELD
 
 
+def new_metadata_exist(metadata_list, new_meta):
+    for md in metadata_list:
+        if (md[ES_PHONE_MD['month']] == new_meta[ES_PHONE_MD['month']]
+                and md[ES_PHONE_MD['total_calls']] == new_meta[ES_PHONE_MD['total_calls']]):
+            return True
+    return False
+
+
 def build_agg_metadata(new_meta):
     return {
         v: new_meta[ES_PHONE_MD[k]] 

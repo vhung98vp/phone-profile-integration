@@ -4,8 +4,8 @@ import uuid
 from confluent_kafka import Consumer, Producer
 from concurrent.futures import ThreadPoolExecutor
 from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, \
-    KAFKA_PRODUCER_CONFIG, MAX_WORKERS, MES_FIELD, ES_PHONE_MD, ES_PROPERTY
-from .utils import merge_metadata, build_agg_metadata, flat_list, map_metadata
+    KAFKA_PRODUCER_CONFIG, MAX_WORKERS, MES_FIELD, ES_PROPERTY
+from .utils import merge_metadata, build_agg_metadata, flat_list, map_metadata, new_metadata_exist
 from .elasticsearch import query_elasticsearch
 
 # Kafka setup
@@ -30,9 +30,7 @@ def process_message(msg_key, msg):
         es_record = query_elasticsearch(phone_number)
         if es_record:
             # Check if in metadata array exist new metadata monthly data
-            if any(meta[ES_PHONE_MD['month']] == new_meta[ES_PHONE_MD['month']]
-                    and meta[ES_PHONE_MD['total_calls']] == new_meta[ES_PHONE_MD['total_calls']] 
-                    for meta in es_record['metadata']):
+            if new_metadata_exist(es_record['metadata'], new_meta):
                 logger.info(f"Monthly data already exists for {phone_number}.")
                 return
             es_record['metadata'].append(new_meta)
