@@ -93,6 +93,7 @@ def start_kafka_consumer():
         logger.exception(f"Consumer process terminated: {e}")
     finally:
         consumer.close()
+        producer.flush()
         logger.info(f"Processed {processed_count} messages with {error_count} errors.")
 
 
