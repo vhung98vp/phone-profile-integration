@@ -69,12 +69,16 @@ def process_message(msg_key, msg):
 def start_kafka_consumer():
     processed_count = 0
     error_count = 0
+    last_wait_time = 0
     try:
         while True:
             msg = consumer.poll(KAFKA['consumer_timeout'])
             if msg is None or msg.error():
                 if msg is None:
-                    logger.info("Waiting for messages...")
+                    cur_time = time.time()
+                    if cur_time - last_wait_time > 60:
+                        logger.info("Waiting for messages...")
+                        last_wait_time = cur_time
                 else:
                     logger.error(f"Message error: {msg.error()}")
                 continue
