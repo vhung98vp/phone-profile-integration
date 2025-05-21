@@ -4,7 +4,7 @@ import uuid
 from confluent_kafka import Consumer, Producer
 # from concurrent.futures import ThreadPoolExecutor
 from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, \
-    KAFKA_PRODUCER_CONFIG, MAX_WORKERS, MES_FIELD, ES_PROPERTY
+    KAFKA_PRODUCER_CONFIG, MES_FIELD, ES_PROPERTY
 from .utils import merge_metadata, build_agg_metadata, flat_list, map_metadata, metadata_index, is_metadata_exist, map_to_str
 from .elasticsearch import query_elasticsearch
 
