@@ -2,10 +2,10 @@ import json
 import time
 import uuid
 from confluent_kafka import Consumer, Producer
-from concurrent.futures import ThreadPoolExecutor
+# from concurrent.futures import ThreadPoolExecutor
 from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, \
     KAFKA_PRODUCER_CONFIG, MAX_WORKERS, MES_FIELD, ES_PROPERTY
-from .utils import merge_metadata, build_agg_metadata, flat_list, map_metadata, metadata_index, is_metadata_exist
+from .utils import merge_metadata, build_agg_metadata, flat_list, map_metadata, metadata_index, is_metadata_exist, map_to_str
 from .elasticsearch import query_elasticsearch
 
 # Kafka setup
@@ -13,7 +13,7 @@ producer = Producer(KAFKA_PRODUCER_CONFIG)
 consumer = Consumer(KAFKA_CONSUMER_CONFIG)
 consumer.subscribe([KAFKA['input_topic']])
 
-executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
+# executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
 
 
 def process_message(msg_key, msg):
@@ -53,7 +53,7 @@ def process_message(msg_key, msg):
             **flat_list(ES_PROPERTY['metadata'], es_record['metadata'])
         }
 
-        send_output_to_kafka(result)
+        send_output_to_kafka(map_to_str(result))
         logger.info(f"Updated metadata to Kafka for phone number: {phone_number}")
 
     except Exception as e:
@@ -87,7 +87,8 @@ def start_kafka_consumer():
                 message_key = msg.key().decode("utf-8") if msg.key() else None
                 if not message_key:
                     logger.warning(f"Received message without key: {message}")
-                executor.submit(process_message, message_key, message)
+                # executor.submit(process_message, message_key, message)
+                process_message(message_key, message)
                 consumer.commit(asynchronous=False)
                 processed_count += 1
             except Exception as e:

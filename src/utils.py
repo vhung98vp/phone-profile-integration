@@ -107,3 +107,6 @@ def map_metadata(new_meta, old_key=MES_FIELD, new_key=ES_PHONE_MD):
         if nk:
             result[new_key[nk]] = v 
     return result
+
+def map_to_str(data):
+    return {k: str(v) for k, v in data.items()}

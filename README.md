@@ -21,7 +21,7 @@ This project is designed to manage and integrate phone profile data into the com
 - `KAFKA_INPUT_TOPIC`: Kafka topic for input messages
 - `KAFKA_OUTPUT_TOPIC`: Kafka topic for output messages
 - `KAFKA_ERROR_TOPIC`: Kafka topic for error messages
-- `MAX_WORKERS`: Maximum number of worker threads
+<!-- - `MAX_WORKERS`: Maximum number of worker threads -->
 
 1 _s_srcha, _dt_srcha
 2 field typeField

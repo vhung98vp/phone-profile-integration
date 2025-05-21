@@ -8,7 +8,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-MAX_WORKERS = int(os.environ.get('MAX_WORKERS', 4))
+# MAX_WORKERS = int(os.environ.get('MAX_WORKERS', 4))
 
 KAFKA = {
     'brokers': os.environ.get('KAFKA_BOOTSTRAP_SERVER'),
