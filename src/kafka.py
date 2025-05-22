@@ -21,7 +21,7 @@ def process_message(msg_key, msg):
     try:
         data = json.loads(msg)
         phone_number = data.get(MES_FIELD['phone_number'])
-        new_meta = data.get(MES_FIELD['metadata'])
+        new_meta = json.loads(data.get(MES_FIELD['metadata']))
         if not phone_number or not new_meta:
             logger.warning(f"Invalid message data: {msg}")
             return
