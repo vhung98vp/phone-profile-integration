@@ -105,7 +105,7 @@ def map_metadata(new_meta, old_key=MES_FIELD, new_key=ES_PHONE_MD):
     for k, v in new_meta.items():
         nk = old_key.get(k)
         if nk:
-            result[new_key[nk]] = v 
+            result[new_key[nk]] = str(v) 
     return result
 
 def map_to_str(data):
