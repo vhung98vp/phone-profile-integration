@@ -20,6 +20,7 @@ def build_agg_metadata(new_meta):
     return {
         v: new_meta[ES_PHONE_MD[k]] 
         for k, v in ES_PHONE_PROPERTY.items()
+        if ES_PHONE_MD[k] in new_meta
     }
 
 def merge_metadata(metadata_list):
