@@ -5,7 +5,7 @@ from confluent_kafka import Consumer, Producer
 # from concurrent.futures import ThreadPoolExecutor
 from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, \
     KAFKA_PRODUCER_CONFIG, MES_FIELD, ES_PROPERTY
-from .utils import merge_metadata, build_agg_metadata, flat_list, map_metadata, metadata_index, is_metadata_exist, map_to_str
+from .utils import merge_metadata, build_agg_metadata, flat_list, map_metadata, metadata_index, is_metadata_exist
 from .elasticsearch import query_elasticsearch
 
 # Kafka setup
@@ -53,7 +53,7 @@ def process_message(msg_key, msg):
             **flat_list(ES_PROPERTY['metadata'], es_record['metadata'])
         }
 
-        send_output_to_kafka(map_to_str(result))
+        send_output_to_kafka(result)
         logger.info(f"Updated metadata to Kafka for phone number: {phone_number}")
 
     except Exception as e:
@@ -104,7 +104,7 @@ def start_kafka_consumer():
 
 def send_output_to_kafka(result: dict):
     try:
-        producer.produce(KAFKA['output_topic'], key=str(uuid.uuid4()), value=json.dumps(result))
+        producer.produce(KAFKA['output_topic'], key=str(uuid.uuid4()), value=json.dumps(result, ensure_ascii=False))
         producer.poll(0)
     except Exception as e:
         logger.exception(f"Error sending result to output topic: {e}")
@@ -112,7 +112,7 @@ def send_output_to_kafka(result: dict):
 
 def log_error_to_kafka(msg_key, error_info: dict):
     try:
-        producer.produce(KAFKA['error_topic'], key=msg_key, value=json.dumps(error_info))
+        producer.produce(KAFKA['error_topic'], key=msg_key, value=json.dumps(error_info, ensure_ascii=False))
         producer.flush()
     except Exception as e:
         logger.exception(f"Error sending to error topic: {e}")
