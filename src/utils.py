@@ -25,7 +25,7 @@ def build_agg_metadata(new_meta):
         elif k == "top_5_contacts":
             result[v] = new_meta.get(ES_PHONE_MD["top_10_contacts"], [])[:5]
         elif k == "top_5_phone_number":
-            result[v] = new_meta.get(ES_PHONE_MD["top_10_phone_number"])[:5]
+            result[v] = new_meta.get(ES_PHONE_MD["top_10_phone_number"], [])[:5]
     return result
 
 def merge_metadata(metadata_list):
