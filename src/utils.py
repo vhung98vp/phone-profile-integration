@@ -21,11 +21,11 @@ def build_agg_metadata(new_meta):
     result = {}
     for k, v in ES_PHONE_PROPERTY.items():
         if k in ES_PHONE_MD and ES_PHONE_MD[k] in new_meta:
-            result[v] = new_meta[ES_PHONE_MD[k]]
+            result[v] = new_meta.get(ES_PHONE_MD[k])
         elif k == "top_5_contacts":
-            result[v] = new_meta[ES_PHONE_MD["top_10_contacts"]][:5]
+            result[v] = new_meta.get(ES_PHONE_MD["top_10_contacts"], [])[:5]
         elif k == "top_5_phone_number":
-            result[v] = new_meta[ES_PHONE_MD["top_10_phone_number"]][:5]
+            result[v] = new_meta.get(ES_PHONE_MD["top_10_phone_number"])[:5]
     return result
 
 def merge_metadata(metadata_list):
