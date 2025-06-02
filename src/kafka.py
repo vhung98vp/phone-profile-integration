@@ -89,7 +89,7 @@ def start_kafka_consumer():
                     logger.warning(f"Received message without key: {message}")
                 # executor.submit(process_message, message_key, message)
                 process_message(message_key, message)
-                consumer.commit(asynchronous=False)
+                # consumer.commit(asynchronous=False)
                 processed_count += 1
             except Exception as e:
                 logger.exception(f"Failed to process message: {e}")

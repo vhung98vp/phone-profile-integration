@@ -43,6 +43,7 @@ with open("config.json", "r") as f:
     ES_PHONE_PROPERTY = config.get('es_phone_properties', {})
     ES_PHONE_MD = config.get('es_phone_metadata', {})
     MES_FIELD = config.get('message_fields', {})
+    MES_STRUCT = config.get('message_struct_fields', {})
 
 if not KAFKA['brokers']:
     raise ValueError("KAFKA_BOOTSTRAP_SERVERS environment variable is not set. Please set it to the Kafka brokers address.")
