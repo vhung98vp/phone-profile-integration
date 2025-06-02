@@ -119,11 +119,10 @@ def map_metadata(new_meta, mes_key=MES_FIELD, mes_st=MES_STRUCT, new_key=ES_PHON
         if nk == 'most_district_from':
             result[new_key[nk]] = get_most_district_str(json.loads(v))
         elif nk == 'top_10_contacts':
-            t10c = json.loads(v)
-            result[new_key[nk]] = [get_top_contact_str(tc) for tc in t10c]
-            result[new_key['top_10_phone_number']] = [tc[mes_st['tc_phone_number']] for tc in t10c]
-            result[new_key['top_10_total_duration']] = [tc[mes_st['tc_total_duration']] for tc in t10c]
-            result[new_key['top_10_total_calls']] = [tc[mes_st['tc_total_calls']] for tc in t10c]
+            result[new_key[nk]] = [get_top_contact_str(tc) for tc in v]
+            result[new_key['top_10_phone_number']] = [tc[mes_st['tc_phone_number']] for tc in v]
+            result[new_key['top_10_total_duration']] = [tc[mes_st['tc_total_duration']] for tc in v]
+            result[new_key['top_10_total_calls']] = [tc[mes_st['tc_total_calls']] for tc in v]
         elif nk:
             result[new_key[nk]] = v
     return result
@@ -137,4 +136,5 @@ def get_most_district_str(mdf, key=MES_STRUCT):
     return f"{province}-{district} ({total_duration}s-{total_calls}c)"
 
 def get_top_contact_str(tc, key=MES_STRUCT):
+    tc = json.loads(tc)
     return f"{tc[key['tc_phone_number']]} ({tc[key['tc_total_duration']]}s-{tc[key['tc_total_calls']]}c)"
