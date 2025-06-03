@@ -12,7 +12,8 @@ This project is designed to manage and integrate phone profile data into the com
 - `ES_USER`: Elasticsearch username
 - `ES_PASSWORD`: Elasticsearch password
 - `ES_PHONE_INDEX`: Name of the Elasticsearch index for phone profiles
-- `ES_PROPERTY_SUFFIX_PATTERN`: Suffix pattern of the Elasticsearch properties to remove
+- `ES_UUID_NAMESPACE`: UUID Namespace to gen entity UUID
+- `ES_ENTITY_TYPE`: Entity type of phone in Elasticsearch
 - `ES_PROPERTY_*`: Name of the Elasticsearch properties for phone profile and metadata
 - `KAFKA_BOOTSTRAP_SERVER`: Kafka bootstrap server address
 - `KAFKA_CONSUMER_GROUP`: Kafka consumer group name
