@@ -1,6 +1,7 @@
 import os
 import logging
 import json
+from uuid import UUID
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -37,12 +38,19 @@ ES = {
     'phone_index': os.environ.get('ES_PHONE_INDEX', 'phone_index'),
 }
 
+ES_CONF = {
+    'uid_namespace': UUID(os.environ.get('ES_UUID_NAMESPACE')),
+    'entity_type': os.environ.get('ES_ENTITY_TYPE'),
+}
+
+
 with open("config.json", "r") as f:
     config = json.load(f)
     ES_PROPERTY = config.get('es_properties', {})
     ES_PHONE_PROPERTY = config.get('es_phone_properties', {})
     ES_PHONE_MD = config.get('es_phone_metadata', {})
     MES_FIELD = config.get('message_fields', {})
+    MES_STRUCT = config.get('message_struct_fields', {})
 
 if not KAFKA['brokers']:
     raise ValueError("KAFKA_BOOTSTRAP_SERVERS environment variable is not set. Please set it to the Kafka brokers address.")
