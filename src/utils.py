@@ -1,13 +1,33 @@
 import json
 import uuid
 from collections import defaultdict
-from .config import ES_PHONE_MD, ES_PHONE_PROPERTY, MES_FIELD, MES_STRUCT, ES_CONF
+from .config import ES_PHONE_MD, ES_PHONE_PROPERTY, MES_FIELD, MES_STRUCT, ES_CONF, ES_PROPERTY
+from .elasticsearch import query_elasticsearch
 
-
+### BUILD UID AND ENTITIES 
 def build_phone_uid(phone_number, entity_type=ES_CONF['entity_type'], namespace=ES_CONF['uid_namespace']):
     return str(uuid.uuid5(namespace, f"{entity_type}:{phone_number}"))
 
 
+def build_phone_entity(phone_number, agg_data={}, metadata={}):
+    return {
+        ES_PROPERTY['internal_id']: build_phone_uid(phone_number),
+        ES_PROPERTY['phone_number']: phone_number,
+        **agg_data,
+        **flat_list(ES_PROPERTY['metadata'], metadata)
+    }
+
+def build_top_phone_entities(metadata):
+    top_phones = metadata.get(ES_PHONE_MD['top_10_phone_number'], [])
+    entities = []
+    for phone_num in top_phones:
+        es_record = query_elasticsearch(phone_num)
+        if not es_record:
+            entities.append(build_phone_entity(phone_num))
+    return entities
+
+
+### METADATA
 def metadata_index(metadata_list, new_meta):
     for idx, md in enumerate(metadata_list):
         if int(md[ES_PHONE_MD['month']]) == int(new_meta[ES_PHONE_MD['month']]):
@@ -79,6 +99,26 @@ def merge_metadata(metadata_list):
         ES_PHONE_PROPERTY["top_5_phone_number"]: agg["top_5_phone_number"]
     }
 
+def map_metadata(new_meta, mes_key=MES_FIELD, mes_st=MES_STRUCT, new_key=ES_PHONE_MD):
+    mes_key = {v: k for k, v in mes_key.items()}
+    result = {}
+    for k, v in new_meta.items():
+        nk = mes_key.get(k)
+        if nk == 'most_district_from':
+            mdf = json.loads(v)
+            result[new_key[nk]] = get_most_district_str(mdf)
+        elif nk == 'top_10_contacts':
+            t10c = [json.loads(tc) for tc in v]
+            result[new_key[nk]] = [get_top_contact_str(tc) for tc in t10c]
+            result[new_key['top_10_phone_number']] = [tc[mes_st['tc_phone_number']] for tc in t10c]
+            result[new_key['top_10_total_duration']] = [tc[mes_st['tc_total_duration']] for tc in t10c]
+            result[new_key['top_10_total_calls']] = [tc[mes_st['tc_total_calls']] for tc in t10c]
+        elif nk:
+            result[new_key[nk]] = v
+    return result
+
+
+## ADDITIONAL UTILS
 def merge_contacts(metadata_list, top_n=5):
     # top_contacts = [contact for md in metadata_list for contact in md.get(ES_PHONE_MD['top_10_contacts'], [])]
     # contact_pattern = r'(\d+)\s*\((\d+)s-(\d+)c\)'
@@ -114,24 +154,6 @@ def flat_list(prefix, list_item):
         for key, value in item.items():
             flat_key = f"{prefix}[{i}].{key}"
             result[flat_key] = str(value) if not isinstance(value, list) else value
-    return result
-
-def map_metadata(new_meta, mes_key=MES_FIELD, mes_st=MES_STRUCT, new_key=ES_PHONE_MD):
-    mes_key = {v: k for k, v in mes_key.items()}
-    result = {}
-    for k, v in new_meta.items():
-        nk = mes_key.get(k)
-        if nk == 'most_district_from':
-            mdf = json.loads(v)
-            result[new_key[nk]] = get_most_district_str(mdf)
-        elif nk == 'top_10_contacts':
-            t10c = [json.loads(tc) for tc in v]
-            result[new_key[nk]] = [get_top_contact_str(tc) for tc in t10c]
-            result[new_key['top_10_phone_number']] = [tc[mes_st['tc_phone_number']] for tc in t10c]
-            result[new_key['top_10_total_duration']] = [tc[mes_st['tc_total_duration']] for tc in t10c]
-            result[new_key['top_10_total_calls']] = [tc[mes_st['tc_total_calls']] for tc in t10c]
-        elif nk:
-            result[new_key[nk]] = v
     return result
 
 
