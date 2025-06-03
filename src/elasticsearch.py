@@ -2,6 +2,7 @@ import requests
 import re
 from datetime import datetime
 from .config import logger, ES, ES_PROPERTY, ES_PHONE_PROPERTY, ES_PHONE_MD
+from .utils import build_phone_uid
 
 
 def query_elasticsearch(phone_number):
@@ -12,7 +13,8 @@ def query_elasticsearch(phone_number):
     query = {
         "query": {
             "match": {
-                f"properties.{ES_PROPERTY['phone_number_search']}": phone_number
+                # f"properties.{ES_PROPERTY['phone_number_search']}": phone_number
+                ES_PROPERTY['phone_id']: build_phone_uid(phone_number)
             }
         }
     }
