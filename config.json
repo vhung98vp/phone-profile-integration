@@ -23,7 +23,7 @@
         "top_5_phone_number": "top5ContactsPhoneNumbers"
     },
     "es_phone_metadata": {
-        "month": "monthlyMonth",
+        "month": "month",
         "total_calls": "monthlyTotalCalls",
         "call_from_rate": "monthlyCallFromRate",
         "avg_duration_from": "monthlyAvgDurationFrom",

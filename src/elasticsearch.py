@@ -1,7 +1,7 @@
 import requests
 import re
 from datetime import datetime
-from .config import logger, ES, ES_PROPERTY
+from .config import logger, ES, ES_PROPERTY, ES_PHONE_PROPERTY, ES_PHONE_MD
 
 
 def query_elasticsearch(phone_number):
@@ -37,8 +37,12 @@ def transform_properties(properties):
     normal_dict = {}
     metadata_list = []
     date_pattern = r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{9}Z$"
+    es_arr_fields = [v for d in [ES_PHONE_PROPERTY, ES_PHONE_MD] 
+                     for k, v in d.items() if re.match(r"top_.*", k)]
+
     for key, value in properties.items():
-        if isinstance(value, list) and len(value) == 1:
+        if isinstance(value, list) and len(value) == 1\
+            and not any(item in key for item in es_arr_fields):
             value = value[0]
         if isinstance(value, str) and re.match(date_pattern, value):
             try: # Convert date string to milliseconds since epoch
