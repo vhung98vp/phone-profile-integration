@@ -22,6 +22,7 @@
         "top_5_contacts": "top5Contacts",
         "top_5_phone_number": "top5ContactsPhoneNumbers"
     },
+
     "es_phone_metadata": {
         "month": "monthlyMonth",
         "total_calls": "monthlyTotalCalls",
@@ -38,9 +39,9 @@
         "most_district_from": "monthlyMostDistrictFrom",
         "top_10_contacts": "monthlyTop10Contacts",
         "hour_calls": "monthlyHourOfDayCalls",
-        "hour_duration": "monthlyHourOfDayDuration",
+        "hour_duration": "monthlyHourOfDayDurations",
         "day_calls": "monthlyDayOfWeekCalls",
-        "day_duration": "monthlyDayOfWeekDuration",
+        "day_duration": "monthlyDayOfWeekDurations",
         "top_10_phone_number": "top10ContactsPhoneNumbers",
         "top_10_total_duration": "top10ContactsTotalDurations",
         "top_10_total_calls": "top10ContactsTotalCalls"
@@ -63,9 +64,9 @@
         "most_district_from": "monthlyMostDistrictFrom",
         "top_10_contacts": "monthlyTop10Contacts",
         "hour_calls": "monthlyHourOfDayCalls",
-        "hour_duration": "monthlyHourOfDayDuration",
+        "hour_duration": "monthlyHourOfDayDurations",
         "day_calls": "monthlyDayOfWeekCalls",
-        "day_duration": "monthlyDayOfWeekDuration"
+        "day_duration": "monthlyDayOfWeekDurations"
     },
     "message_struct_fields": {
         "mdf_district": "district",
