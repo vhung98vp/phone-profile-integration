@@ -22,7 +22,6 @@
         "top_5_contacts": "top5Contacts",
         "top_5_phone_number": "top5ContactsPhoneNumbers"
     },
-
     "es_phone_metadata": {
         "month": "monthlyMonth",
         "total_calls": "monthlyTotalCalls",
