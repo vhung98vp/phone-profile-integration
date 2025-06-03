@@ -3,9 +3,9 @@ import time
 import uuid
 from confluent_kafka import Consumer, Producer
 # from concurrent.futures import ThreadPoolExecutor
-from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, \
-    KAFKA_PRODUCER_CONFIG, MES_FIELD, ES_PROPERTY
-from .utils import merge_metadata, build_agg_metadata, build_phone_entity, map_metadata, metadata_index, is_metadata_exist, build_top_phone_entities
+from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, KAFKA_PRODUCER_CONFIG, MES_FIELD
+from .utils import merge_metadata, build_agg_metadata, map_metadata, metadata_index, is_metadata_exist
+from .build_entity import build_phone_entity, build_top_phone_entities
 from .elasticsearch import query_elasticsearch
 
 # Kafka setup
