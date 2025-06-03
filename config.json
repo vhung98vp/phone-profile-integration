@@ -41,9 +41,9 @@
         "hour_duration": "monthlyHourOfDayDurations",
         "day_calls": "monthlyDayOfWeekCalls",
         "day_duration": "monthlyDayOfWeekDurations",
-        "top_10_phone_number": "top10ContactsPhoneNumbers",
-        "top_10_total_duration": "top10ContactsTotalDurations",
-        "top_10_total_calls": "top10ContactsTotalCalls"
+        "top_10_phone_number": "monthlyTop10ContactsPhoneNumbers",
+        "top_10_total_duration": "monthlyTop10ContactsTotalDurations",
+        "top_10_total_calls": "monthlyTop10ContactsTotalCalls"
     },
     "message_fields": {
         "phone_number": "phoneNumber",
