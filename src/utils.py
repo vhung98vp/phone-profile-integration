@@ -10,14 +10,14 @@ def build_phone_uid(phone_number, entity_type=ES_CONF['entity_type'], namespace=
 
 def metadata_index(metadata_list, new_meta):
     for idx, md in enumerate(metadata_list):
-        if md[ES_PHONE_MD['month']] == new_meta[ES_PHONE_MD['month']]:
+        if int(md[ES_PHONE_MD['month']]) == int(new_meta[ES_PHONE_MD['month']]):
             return idx
     return -1
 
 
 def is_metadata_exist(found_meta, new_meta):
-    if found_meta[ES_PHONE_MD['total_calls']] == new_meta[ES_PHONE_MD['total_calls']] \
-        and found_meta[ES_PHONE_MD['call_from_rate']] == new_meta[ES_PHONE_MD['call_from_rate']]:
+    if int(found_meta[ES_PHONE_MD['total_calls']]) == int(new_meta[ES_PHONE_MD['total_calls']]) \
+        and float(found_meta[ES_PHONE_MD['call_from_rate']]) == float(new_meta[ES_PHONE_MD['call_from_rate']]):
             return True
     return False
 
@@ -108,12 +108,12 @@ def get_latest_district(metadata_list):
     return latest_metadata.get(ES_PHONE_MD['most_district_from'], '')
 
 
-def flat_list(prefix, list):
+def flat_list(prefix, list_item):
     result = {}
-    for i, item in enumerate(list):
+    for i, item in enumerate(list_item):
         for key, value in item.items():
             flat_key = f"{prefix}[{i}].{key}"
-            result[flat_key] = value
+            result[flat_key] = str(value) if not isinstance(value, list) else value
     return result
 
 def map_metadata(new_meta, mes_key=MES_FIELD, mes_st=MES_STRUCT, new_key=ES_PHONE_MD):

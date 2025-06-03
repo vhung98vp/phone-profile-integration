@@ -46,7 +46,7 @@ def transform_properties(properties):
             value = value[0]
         if isinstance(value, str) and re.match(date_pattern, value):
             try: # Convert date string to milliseconds since epoch
-                value = str(datetime.fromisoformat(value.replace('Z', '+00:00')).timestamp() * 1000)
+                value = int(datetime.fromisoformat(value.replace('Z', '+00:00')).timestamp() * 1000)
             except ValueError:
                 logger.warning(f"Invalid date format for key {key}: {value}")
 
