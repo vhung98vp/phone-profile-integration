@@ -5,7 +5,7 @@ from confluent_kafka import Consumer, Producer
 # from concurrent.futures import ThreadPoolExecutor
 from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, \
     KAFKA_PRODUCER_CONFIG, MES_FIELD, ES_PROPERTY
-from .utils import merge_metadata, build_agg_metadata, flat_list, map_metadata, metadata_index, is_metadata_exist
+from .utils import merge_metadata, build_agg_metadata, flat_list, map_metadata, metadata_index, is_metadata_exist, build_phone_uid
 from .elasticsearch import query_elasticsearch
 
 # Kafka setup
@@ -45,9 +45,8 @@ def process_message(msg_key, msg):
             es_record = {'metadata': [new_meta]}
             agg_data = build_agg_metadata(new_meta)
 
-        phone_uid = str(uuid.uuid5(uuid.NAMESPACE_DNS, phone_number))
         result = {
-            ES_PROPERTY['internal_id']: phone_uid,
+            ES_PROPERTY['internal_id']: build_phone_uid(phone_number),
             ES_PROPERTY['phone_number']: phone_number,
             **agg_data,
             **flat_list(ES_PROPERTY['metadata'], es_record['metadata'])
@@ -62,6 +61,7 @@ def process_message(msg_key, msg):
             "error": str(e), 
             "message": msg 
         })
+        raise e
     finally:
         logger.info(f"Processed message {msg_key} in {time.time() - start_time:.4f} seconds")
 
@@ -92,7 +92,6 @@ def start_kafka_consumer():
                 # consumer.commit(asynchronous=False)
                 processed_count += 1
             except Exception as e:
-                logger.exception(f"Failed to process message: {e}")
                 error_count += 1
     except Exception as e:
         logger.exception(f"Consumer process terminated: {e}")

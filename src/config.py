@@ -1,6 +1,7 @@
 import os
 import logging
 import json
+from uuid import UUID
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -36,6 +37,12 @@ ES = {
     'password': os.environ.get('ES_PASSWORD'),
     'phone_index': os.environ.get('ES_PHONE_INDEX', 'phone_index'),
 }
+
+ES_CONF = {
+    'uid_namespace': UUID(os.environ.get('ES_UUID_NAMESPACE')),
+    'entity_type': os.environ.get('ES_ENTITY_TYPE'),
+}
+
 
 with open("config.json", "r") as f:
     config = json.load(f)

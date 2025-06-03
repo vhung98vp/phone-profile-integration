@@ -1,6 +1,11 @@
 import json
+import uuid
 from collections import defaultdict
-from .config import ES_PHONE_MD, ES_PHONE_PROPERTY, MES_FIELD, MES_STRUCT
+from .config import ES_PHONE_MD, ES_PHONE_PROPERTY, MES_FIELD, MES_STRUCT, ES_CONF
+
+
+def build_phone_uid(phone_number, entity_type=ES_CONF['entity_type'], namespace=ES_CONF['uid_namespace']):
+    return str(uuid.uuid5(namespace, f"{entity_type}:{phone_number}"))
 
 
 def metadata_index(metadata_list, new_meta):
