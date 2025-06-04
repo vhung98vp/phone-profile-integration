@@ -65,6 +65,5 @@ def transform_properties(properties):
         else:
             normal_dict[key] = value
 
-    if metadata_list:
-        normal_dict['metadata'] = metadata_list
+    normal_dict['metadata'] = metadata_list
     return normal_dict
