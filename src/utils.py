@@ -56,7 +56,7 @@ def merge_metadata(metadata_list):
         calc_md["total_duration_to"] = float(md.get(ES_PHONE_MD['avg_duration_to'], 0)) * calc_md["total_calls_to"]
         calc_md["total_business_call"] = float(md.get(ES_PHONE_MD['business_call_rate'], 0)) * total_calls
         for field in fields:
-            agg[field] += int(md.get(ES_PHONE_MD[field], 0))
+            agg[field] += float(md.get(ES_PHONE_MD[field], 0))
         for field in calc_fields:
             agg[field] += calc_md[field]
 
@@ -111,8 +111,8 @@ def merge_contacts(metadata_list, top_n=5):
             md.get(ES_PHONE_MD['top_10_total_duration'], []),
             md.get(ES_PHONE_MD['top_10_total_calls'], [])
         ):
-            contact_map[phone_number]["total_calls"] += int(duration)
-            contact_map[phone_number]["total_duration"] += int(calls)
+            contact_map[phone_number]["total_calls"] += float(duration)
+            contact_map[phone_number]["total_duration"] += float(calls)
 
     top_contacts = sorted(
         contact_map.items(),
