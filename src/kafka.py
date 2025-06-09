@@ -48,11 +48,11 @@ def process_message(msg_key, msg):
         phone_entity = build_phone_entity(phone_number, agg_data, es_record['metadata'])
         send_output_to_kafka(phone_entity)
 
-        top_phone_entities = build_top_phone_entities(new_meta)
-        for item in top_phone_entities:
-            send_output_to_kafka(item)
+        # top_phone_entities = build_top_phone_entities(new_meta)
+        # for item in top_phone_entities:
+        #     send_output_to_kafka(item)
 
-        logger.info(f"Updated metadata for phone: {phone_number} and created {len(top_phone_entities)} phones.")
+        logger.info(f"Updated metadata for phone: {phone_number}.")
 
     except Exception as e:
         logger.exception(f"Error while processing message {msg_key}:{msg}: {e}")
