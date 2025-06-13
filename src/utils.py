@@ -93,8 +93,8 @@ def merge_contacts(metadata_list, top_n=5):
             md.get(ES_PHONE_MD['top_10_total_duration'], []),
             md.get(ES_PHONE_MD['top_10_total_calls'], [])
         ):
-            contact_map[phone_number]["total_calls"] += float(duration)
-            contact_map[phone_number]["total_duration"] += float(calls)
+            contact_map[phone_number]["total_duration"] += float(duration)
+            contact_map[phone_number]["total_calls"] += float(calls)
 
     filtered_contacts = {
         phone_number: data
