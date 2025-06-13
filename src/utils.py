@@ -1,38 +1,19 @@
 import json
 import uuid
 from collections import defaultdict
-from .config import ES_PHONE_MD, ES_PHONE_PROPERTY, MES_FIELD, MES_STRUCT, ES_CONF
+from .config import ES_PHONE_MD, ES_PHONE_PROPERTY, MES_FIELD, MES_STRUCT, ES_CONF, THRESHOLDS
 
 
 def build_phone_uid(phone_number, entity_type=ES_CONF['entity_type'], namespace=ES_CONF['uid_namespace']):
     return str(uuid.uuid5(namespace, f"{entity_type}:{phone_number}"))
 
 
-### METADATA
-def metadata_index(metadata_list, new_meta):
-    for idx, md in enumerate(metadata_list):
-        if int(md[ES_PHONE_MD['month']]) == int(new_meta[ES_PHONE_MD['month']]):
-            return idx
-    return -1
+def map_agg_meta_list(meta_list):
+    metalist = [map_metadata(meta) for meta in meta_list]
+    es_metalist = sorted(metalist, key=lambda x: x.get(ES_PHONE_MD["month"], 0), reverse=True)
+    agg_data = merge_metadata(es_metalist)
+    return agg_data, es_metalist
 
-
-def is_metadata_exist(found_meta, new_meta):
-    if int(found_meta[ES_PHONE_MD['total_calls']]) == int(new_meta[ES_PHONE_MD['total_calls']]) \
-        and float(found_meta[ES_PHONE_MD['call_from_rate']]) == float(new_meta[ES_PHONE_MD['call_from_rate']]):
-            return True
-    return False
-
-
-def build_agg_metadata(new_meta):
-    result = {}
-    for k, v in ES_PHONE_PROPERTY.items():
-        if k in ES_PHONE_MD and ES_PHONE_MD[k] in new_meta:
-            result[v] = new_meta.get(ES_PHONE_MD[k])
-        elif k == "top_5_contacts":
-            result[v] = new_meta.get(ES_PHONE_MD["top_10_contacts"], [])[:5]
-        elif k == "top_5_phone_number":
-            result[v] = new_meta.get(ES_PHONE_MD["top_10_phone_number"], [])[:5]
-    return result
 
 def merge_metadata(metadata_list):
     fields = [ 
@@ -60,7 +41,7 @@ def merge_metadata(metadata_list):
         for field in calc_fields:
             agg[field] += calc_md[field]
 
-    agg["most_district_from"] = get_latest_district(metadata_list)
+    agg["most_district_from"] = metadata_list[0].get(ES_PHONE_MD['most_district_from'], '')
     agg["top_5_contacts"], agg["top_5_phone_number"] = merge_contacts(metadata_list, top_n=5)
     
     return {
@@ -79,6 +60,7 @@ def merge_metadata(metadata_list):
         ES_PHONE_PROPERTY["top_5_contacts"]: agg["top_5_contacts"],
         ES_PHONE_PROPERTY["top_5_phone_number"]: agg["top_5_phone_number"]
     }
+
 
 def map_metadata(new_meta, mes_key=MES_FIELD, mes_st=MES_STRUCT, new_key=ES_PHONE_MD):
     mes_key = {v: k for k, v in mes_key.items()}
@@ -117,16 +99,16 @@ def merge_contacts(metadata_list, top_n=5):
     top_contacts = sorted(
         contact_map.items(),
         key=lambda x: (-x[1]["total_duration"], -x[1]["total_calls"])
-    )[:top_n]
+    )
+
+    top_contacts = [c for c in top_contacts 
+                    if c[1]["total_duration"] >= THRESHOLDS["top_5_duration"]
+                    and c[1]["total_calls"] >= THRESHOLDS["top_5_total_calls"]][:top_n]
 
     return [
-        f"{phone_number} ({data['total_duration']}s-{data['total_calls']}c)"
+        f"{phone_number} ({int(data['total_duration'])}s-{int(data['total_calls'])}c)"
         for phone_number, data in top_contacts
     ], [ phone_number for phone_number, _ in top_contacts ]
-
-def get_latest_district(metadata_list):
-    latest_metadata = max(metadata_list, key=lambda md: int(md.get(ES_PHONE_MD['month'], 0)))
-    return latest_metadata.get(ES_PHONE_MD['most_district_from'], '')
 
 
 def flat_list(prefix, list_item):

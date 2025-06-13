@@ -2,18 +2,14 @@ import json
 import time
 import uuid
 from confluent_kafka import Consumer, Producer
-# from concurrent.futures import ThreadPoolExecutor
 from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, KAFKA_PRODUCER_CONFIG, MES_FIELD
-from .utils import merge_metadata, build_agg_metadata, map_metadata, metadata_index, is_metadata_exist
+from .utils import map_agg_meta_list
 from .build_entity import build_phone_entity, build_top_phone_entities
-from .elasticsearch import query_elasticsearch
 
 # Kafka setup
 producer = Producer(KAFKA_PRODUCER_CONFIG)
 consumer = Consumer(KAFKA_CONSUMER_CONFIG)
 consumer.subscribe([KAFKA['input_topic']])
-
-# executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
 
 
 def process_message(msg_key, msg):
@@ -21,34 +17,13 @@ def process_message(msg_key, msg):
     try:
         data = json.loads(msg)
         phone_number = data.get(MES_FIELD['phone_number'])
-        new_meta = json.loads(data.get(MES_FIELD['metadata']))
-        if not phone_number or not new_meta:
-            logger.warning(f"Invalid message data: {msg}")
-            return
-        new_meta = map_metadata(new_meta)
+        meta_list = [json.loads(meta) for meta in data.get(MES_FIELD['metadata'], [])]
+        agg_data, es_metalist = map_agg_meta_list(meta_list)
 
-        es_record = query_elasticsearch(phone_number)
-        if es_record:
-            # Check if in metadata array exist new metadata monthly data
-            cur_index = metadata_index(es_record['metadata'], new_meta)
-            if cur_index != -1:
-                if is_metadata_exist(es_record['metadata'][cur_index], new_meta):
-                    logger.info(f"Monthly data already exists for {phone_number}.")
-                    return
-                else:
-                    logger.info(f"Updating metadata for {phone_number}.")
-                    es_record['metadata'][cur_index] = new_meta
-            else:
-                es_record['metadata'].append(new_meta)
-            agg_data = merge_metadata(es_record['metadata'])
-        else:
-            es_record = {'metadata': [new_meta]}
-            agg_data = build_agg_metadata(new_meta)
-
-        phone_entity = build_phone_entity(phone_number, agg_data, es_record['metadata'])
+        phone_entity = build_phone_entity(phone_number, agg_data, es_metalist)
         send_output_to_kafka(phone_entity)
 
-        # top_phone_entities = build_top_phone_entities(new_meta)
+        # top_phone_entities = build_top_phone_entities(agg_data)
         # for item in top_phone_entities:
         #     send_output_to_kafka(item)
 
@@ -86,9 +61,7 @@ def start_kafka_consumer():
                 message_key = msg.key().decode("utf-8") if msg.key() else None
                 if not message_key:
                     logger.warning(f"Received message without key: {message}")
-                # executor.submit(process_message, message_key, message)
                 process_message(message_key, message)
-                # consumer.commit(asynchronous=False)
                 processed_count += 1
             except Exception as e:
                 error_count += 1

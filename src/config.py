@@ -43,6 +43,11 @@ ES_CONF = {
     'entity_type': os.environ.get('ES_ENTITY_TYPE'),
 }
 
+THRESHOLDS = {
+    'top_5_duration': os.environ.get('THRESHOLD_TOP_5_DURATION', 15),
+    'top_5_total_calls': os.environ.get('THRESHOLD_TOP_5_TOTAL_CALLS', 0)
+}
+
 
 with open("config.json", "r") as f:
     config = json.load(f)
@@ -54,5 +59,5 @@ with open("config.json", "r") as f:
 
 if not KAFKA['brokers']:
     raise ValueError("KAFKA_BOOTSTRAP_SERVERS environment variable is not set. Please set it to the Kafka brokers address.")
-if not ES['url']:
-    raise ValueError("ES_URL environment variable is not set. Please set it to the Elasticsearch URL.")
+# if not ES['url']:
+#     raise ValueError("ES_URL environment variable is not set. Please set it to the Elasticsearch URL.")
