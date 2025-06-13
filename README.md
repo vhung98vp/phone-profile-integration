@@ -14,7 +14,9 @@ This project is designed to manage and integrate phone profile data into the com
 - `ES_PHONE_INDEX`: Name of the Elasticsearch index for phone profiles
 - `ES_UUID_NAMESPACE`: UUID Namespace to gen entity UUID
 - `ES_ENTITY_TYPE`: Entity type of phone in Elasticsearch
-- `ES_PROPERTY_*`: Name of the Elasticsearch properties for phone profile and metadata
+- `ADD_TOP_PHONE_ENTITY`: Option to add empty entity in top 5 to Elasticsearch
+- `THRESHOLD_TOP_5_TOTAL_DURATION`: Threshold duration to add number to top 5 overall
+- `THRESHOLD_TOP_5_TOTAL_CALLS`: Threshold calls to add number to top 5 overall
 - `KAFKA_BOOTSTRAP_SERVER`: Kafka bootstrap server address
 - `KAFKA_CONSUMER_GROUP`: Kafka consumer group name
 - `KAFKA_CONSUMER_TIMEOUT`: Kafka consumer timeout (in second)
