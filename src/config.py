@@ -40,6 +40,7 @@ ES = {
 ES_CONF = {
     'uid_namespace': UUID(os.environ.get('ES_UUID_NAMESPACE')),
     'entity_type': os.environ.get('ES_ENTITY_TYPE'),
+    'add_top_entity': bool(os.environ.get('ADD_TOP_PHONE_ENTITY', 0))
 }
 
 THRESHOLDS = {

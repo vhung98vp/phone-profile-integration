@@ -2,7 +2,7 @@ import json
 import time
 import uuid
 from confluent_kafka import Consumer, Producer
-from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, KAFKA_PRODUCER_CONFIG, MES_FIELD
+from .config import logger, KAFKA, KAFKA_CONSUMER_CONFIG, KAFKA_PRODUCER_CONFIG, MES_FIELD, ES_CONF
 from .utils import map_agg_meta_list
 from .build_entity import build_phone_entity, build_top_phone_entities
 
@@ -23,9 +23,10 @@ def process_message(msg_key, msg):
         phone_entity = build_phone_entity(phone_number, agg_data, es_metalist)
         send_output_to_kafka(phone_entity)
 
-        # top_phone_entities = build_top_phone_entities(agg_data)
-        # for item in top_phone_entities:
-        #     send_output_to_kafka(item)
+        if ES_CONF["add_top_entity"]:
+            top_phone_entities = build_top_phone_entities(agg_data)
+            for item in top_phone_entities:
+                send_output_to_kafka(item)
 
         logger.info(f"Updated metadata for phone: {phone_number}.")
 
