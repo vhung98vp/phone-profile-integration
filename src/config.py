@@ -9,7 +9,6 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# MAX_WORKERS = int(os.environ.get('MAX_WORKERS', 4))
 
 KAFKA = {
     'brokers': os.environ.get('KAFKA_BOOTSTRAP_SERVER'),
@@ -44,8 +43,8 @@ ES_CONF = {
 }
 
 THRESHOLDS = {
-    'top_5_duration': os.environ.get('THRESHOLD_TOP_5_DURATION', 15),
-    'top_5_total_calls': os.environ.get('THRESHOLD_TOP_5_TOTAL_CALLS', 0)
+    'top_5_total_duration': int(os.environ.get('THRESHOLD_TOP_5_TOTAL_DURATION', 15)),
+    'top_5_total_calls': int(os.environ.get('THRESHOLD_TOP_5_TOTAL_CALLS', 0))
 }
 
 

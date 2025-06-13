@@ -96,14 +96,17 @@ def merge_contacts(metadata_list, top_n=5):
             contact_map[phone_number]["total_calls"] += float(duration)
             contact_map[phone_number]["total_duration"] += float(calls)
 
-    top_contacts = sorted(
-        contact_map.items(),
-        key=lambda x: (-x[1]["total_duration"], -x[1]["total_calls"])
-    )
+    filtered_contacts = {
+        phone_number: data
+        for phone_number, data in contact_map.items()
+        if data["total_duration"] >= THRESHOLDS["top_5_total_duration"]
+        and data["total_calls"] >= THRESHOLDS["top_5_total_calls"]
+    }
 
-    top_contacts = [c for c in top_contacts 
-                    if c[1]["total_duration"] >= THRESHOLDS["top_5_duration"]
-                    and c[1]["total_calls"] >= THRESHOLDS["top_5_total_calls"]][:top_n]
+    top_contacts = sorted(
+        filtered_contacts.items(),
+        key=lambda x: (-x[1]["total_duration"], -x[1]["total_calls"])
+    )[:top_n]
 
     return [
         f"{phone_number} ({int(data['total_duration'])}s-{int(data['total_calls'])}c)"
