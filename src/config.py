@@ -9,7 +9,6 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# MAX_WORKERS = int(os.environ.get('MAX_WORKERS', 4))
 
 KAFKA = {
     'brokers': os.environ.get('KAFKA_BOOTSTRAP_SERVER'),
@@ -43,6 +42,11 @@ ES_CONF = {
     'entity_type': os.environ.get('ES_ENTITY_TYPE'),
 }
 
+THRESHOLDS = {
+    'top_5_total_duration': int(os.environ.get('THRESHOLD_TOP_5_TOTAL_DURATION', 15)),
+    'top_5_total_calls': int(os.environ.get('THRESHOLD_TOP_5_TOTAL_CALLS', 0))
+}
+
 
 with open("config.json", "r") as f:
     config = json.load(f)
@@ -54,5 +58,5 @@ with open("config.json", "r") as f:
 
 if not KAFKA['brokers']:
     raise ValueError("KAFKA_BOOTSTRAP_SERVERS environment variable is not set. Please set it to the Kafka brokers address.")
-if not ES['url']:
-    raise ValueError("ES_URL environment variable is not set. Please set it to the Elasticsearch URL.")
+# if not ES['url']:
+#     raise ValueError("ES_URL environment variable is not set. Please set it to the Elasticsearch URL.")
