@@ -1,5 +1,5 @@
 from .utils import build_phone_uid, flat_list
-from .config import ES_PHONE_MD,  ES_PROPERTY
+from .config import ES_PROPERTY
 from .elasticsearch import query_elasticsearch
 
 
